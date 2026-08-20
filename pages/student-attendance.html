@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Attendance</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div class="alert alert-light border d-flex gap-2 align-items-start" style="border-color:var(--lms-border) !important">
+    <i class="bi bi-hourglass-split fs-5" style="color:var(--lms-blue)"></i>
+    <div class="small">
+      <strong>Two kinds of hours count towards your certificate.</strong>
+      Synchronous hours come from attending live sessions. Asynchronous hours are recorded automatically while you work through learning materials in the LMS.
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Sessions attended</div><div class="stat-value">6 / 6</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Synchronous hours</div><div class="stat-value">4.0</div><div class="text-muted-sm mt-1">of 4.0 required</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Asynchronous hours</div><div class="stat-value">0.9</div><div class="text-muted-sm mt-1">of 1.6 required</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Attendance rate</div><div class="stat-value">100%</div></div></div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header">Session attendance</div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead><tr><th>Session</th><th>Course</th><th>Date</th><th>Mode</th><th>Hours credited</th><th>Attendance</th></tr></thead>
+        <tbody id="sessionRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Asynchronous time recorded by the LMS</div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead><tr><th>Learning material</th><th>Course</th><th>Required</th><th>Recorded</th><th>Status</th></tr></thead>
+        <tbody id="asyncRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'student-attendance',
+  title: 'My Attendance',
+  sub: 'Synchronous sessions and asynchronous learning time',
+  perm: 'student.attendance'
+});
+
+(function () {
+  const sessions = [
+    { name: 'Orientation and hazard basics', course: 'Workplace Safety Training', date: '2026-08-03', mode: 'Google Meet', hours: 2, present: true },
+    { name: 'Emergency response walkthrough', course: 'Workplace Safety Training', date: '2026-08-10', mode: 'Google Meet', hours: 2, present: true },
+    { name: 'Fire safety briefing', course: 'Fire Safety and Evacuation Drill', date: '2026-07-24', mode: 'Google Meet', hours: 1, present: true },
+    { name: 'Evacuation drill', course: 'Fire Safety and Evacuation Drill', date: '2026-07-31', mode: 'On-site', hours: 1, present: true }
+  ];
+
+  LMS.render('#sessionRows', sessions.map(s =>
+    '<tr>' +
+      '<td class="fw-semibold">' + s.name + '</td>' +
+      '<td class="text-muted-sm">' + s.course + '</td>' +
+      '<td class="text-muted-sm">' + s.date + '</td>' +
+      '<td class="text-muted-sm">' + s.mode + '</td>' +
+      '<td class="text-muted-sm">' + s.hours + ' hrs</td>' +
+      '<td>' + (s.present ? LMS.badge('Present', 'green') : LMS.badge('Absent', 'red')) + '</td>' +
+    '</tr>').join(''));
+
+  LMS.render('#asyncRows', LMSData.materials.filter(m => m.type !== 'Quiz').map(m => {
+    const label = m.status === 'completed' ? 'Complete' : (m.status === 'locked' ? 'Locked' : 'Incomplete');
+    return '<tr>' +
+      '<td class="fw-semibold">' + m.title.split(' - ')[1] + '</td>' +
+      '<td class="text-muted-sm">Workplace Safety Training</td>' +
+      '<td class="text-muted-sm">' + m.requiredMinutes + ' min</td>' +
+      '<td class="text-muted-sm">' + m.timeSpent + ' min</td>' +
+      '<td>' + LMS.statusBadge(label) + '</td>' +
+    '</tr>';
+  }).join(''));
+})();
+</script>
+</body>
+</html>

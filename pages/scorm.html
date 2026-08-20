@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCORM Packages</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div id="pageActionSource" hidden>
+    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadScorm">
+      <i class="bi bi-upload me-1"></i>Upload package
+    </button>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">Uploaded packages</div>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr><th>Package</th><th>Standard</th><th>Assigned course</th><th>Size</th><th>Uploaded</th><th>Status</th><th class="text-end">Actions</th></tr>
+            </thead>
+            <tbody id="scormRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-header">Package preview</div>
+        <div class="card-body">
+          <div class="media-frame mb-3">
+            <div>
+              <i class="bi bi-box-seam fs-1 d-block mb-2"></i>
+              <div class="fw-semibold">Workplace Hazard Identification</div>
+              <div class="frame-note">SCORM 1.2 player area &mdash; interactive content renders here</div>
+            </div>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-3"><div class="text-muted-sm">Launch file</div><div class="fw-semibold small">index_lms.html</div></div>
+            <div class="col-md-3"><div class="text-muted-sm">Tracked status</div><div class="fw-semibold small">lesson_status, score, suspend data</div></div>
+            <div class="col-md-3"><div class="text-muted-sm">Resume support</div><div class="fw-semibold small">Enabled</div></div>
+            <div class="col-md-3"><div class="text-muted-sm">Mastery score</div><div class="fw-semibold small">75%</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card mb-3">
+        <div class="card-header">Validation checklist</div>
+        <ul class="condition-list p-3 mb-0">
+          <li><i class="bi bi-check-circle-fill"></i><span>Archive is a valid ZIP file</span></li>
+          <li><i class="bi bi-check-circle-fill"></i><span>imsmanifest.xml present at package root</span></li>
+          <li><i class="bi bi-check-circle-fill"></i><span>Supported standard detected</span></li>
+          <li><i class="bi bi-check-circle-fill"></i><span>No executable or server-side files</span></li>
+          <li><i class="bi bi-check-circle-fill"></i><span>Extracted size within storage limit</span></li>
+          <li><i class="bi bi-check-circle-fill"></i><span>Launch file resolves correctly</span></li>
+        </ul>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">Storage</div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between text-muted-sm mb-1"><span>Learning content used</span><span>68.4 GB of 100 GB</span></div>
+          <div class="progress mb-3" style="height:8px"><div class="progress-bar" style="width:68%"></div></div>
+          <div class="text-muted-sm">
+            All course packages are stored on the web hosting and cloud server for continuous online delivery.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="demo-note"><i class="bi bi-info-circle me-1"></i>
+            The preview is a player placeholder. No SCORM runtime executes in this UI demo.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="uploadScorm" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form data-demo-form="Package queued for validation. This UI demo does not store files." novalidate>
+          <div class="modal-header">
+            <h5 class="modal-title" style="font-size:1rem;color:var(--lms-navy)">Upload SCORM package</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label" for="pkgTitle">Package title</label>
+              <input class="form-control" id="pkgTitle" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="pkgVersion">SCORM standard</label>
+              <select class="form-select" id="pkgVersion">
+                <option>SCORM 1.2</option>
+                <option>SCORM 2004 3rd Edition</option>
+                <option>SCORM 2004 4th Edition</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="pkgCourse">Assign to course</label>
+              <select class="form-select" id="pkgCourse" required></select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="pkgFile">Package file (.zip)</label>
+              <input type="file" class="form-control" id="pkgFile" accept=".zip" required>
+              <div class="form-text">Maximum 500 MB. The archive is scanned before it is published.</div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label" for="pkgMastery">Mastery score</label>
+              <div class="input-group"><input type="number" class="form-control" id="pkgMastery" value="75"><span class="input-group-text">%</span></div>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="pkgResume" checked>
+              <label class="form-check-label" for="pkgResume">Allow learners to resume where they stopped</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Upload and validate</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'scorm',
+  title: 'SCORM Package Management',
+  sub: 'Upload, validate, and assign SCORM course packages',
+  perm: 'scorm.manage',
+  breadcrumb: [{ label: 'Learning', href: 'dashboard.html' }, { label: 'SCORM Packages' }]
+});
+
+(function () {
+  LMS.render('#scormRows', LMSData.scormPackages.map(p =>
+    '<tr>' +
+      '<td><div class="fw-semibold">' + p.title + '</div><div class="text-muted-sm">' + p.name + '</div></td>' +
+      '<td class="text-muted-sm">' + p.version + '</td>' +
+      '<td class="text-muted-sm">' + p.course + '</td>' +
+      '<td class="text-muted-sm">' + p.size + '</td>' +
+      '<td class="text-muted-sm">' + p.uploaded + '</td>' +
+      '<td>' + LMS.statusBadge(p.status) + '</td>' +
+      '<td class="text-end">' +
+        '<button class="btn btn-sm btn-outline-primary py-0 px-2" data-demo-action="Package preview is a placeholder in this UI demo."><i class="bi bi-play"></i></button> ' +
+        '<button class="btn btn-sm btn-outline-secondary py-0 px-2" data-demo-action="Package replacement is display-only in this UI demo."><i class="bi bi-arrow-repeat"></i></button>' +
+      '</td>' +
+    '</tr>').join(''));
+
+  const courseSelect = document.getElementById('pkgCourse');
+  courseSelect.innerHTML = LMSData.courses.map(c => '<option>' + c.title + '</option>').join('');
+})();
+</script>
+</body>
+</html>

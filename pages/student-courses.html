@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Courses</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div class="row g-3 mb-3" id="statRow"></div>
+
+  <div class="row g-3">
+    <div class="col-lg-8">
+      <div class="card mb-3">
+        <div class="card-header">Enrolled courses</div>
+        <div class="card-body" id="courseList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">How a course is completed</div>
+        <div class="card-body">
+          <div class="row g-2 align-items-center">
+            <div class="col"><div class="flow-step">Open course</div></div>
+            <div class="col-auto flow-arrow"><i class="bi bi-arrow-right"></i></div>
+            <div class="col"><div class="flow-step">Finish each material's conditions</div></div>
+            <div class="col-auto flow-arrow"><i class="bi bi-arrow-right"></i></div>
+            <div class="col"><div class="flow-step">Next material unlocks</div></div>
+            <div class="col-auto flow-arrow"><i class="bi bi-arrow-right"></i></div>
+            <div class="col"><div class="flow-step">Pass the quiz</div></div>
+            <div class="col-auto flow-arrow"><i class="bi bi-arrow-right"></i></div>
+            <div class="col"><div class="flow-step">Engagement hours verified</div></div>
+            <div class="col-auto flow-arrow"><i class="bi bi-arrow-right"></i></div>
+            <div class="col"><div class="flow-step">Certificate of Attendance</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card mb-3">
+        <div class="card-header">Next session</div>
+        <div class="card-body">
+          <div class="fw-semibold" style="color:var(--lms-navy)">Workplace Safety Training</div>
+          <div class="text-muted-sm mb-2">Monday, 24 August 2026 &middot; 09:00 to 11:00</div>
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="bi bi-camera-video" style="color:var(--lms-blue)"></i>
+            <span class="text-muted-sm">Google Meet &middot; meet.google.com/wst-2026</span>
+          </div>
+          <button class="btn btn-primary btn-sm w-100" data-demo-action="The meeting link opens here. Display only in this UI demo.">
+            <i class="bi bi-box-arrow-up-right me-1"></i>Join session
+          </button>
+          <div class="form-text mt-2">Attendance in this session credits 2 synchronous hours.</div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">Engagement hours</div>
+        <div class="card-body">
+          <div class="mb-3">
+            <div class="d-flex justify-content-between text-muted-sm mb-1"><span>Synchronous</span><span>4.0 of 4.0 hrs</span></div>
+            <div class="progress" style="height:8px"><div class="progress-bar" style="width:100%"></div></div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between text-muted-sm mb-1"><span>Asynchronous</span><span>0.9 of 1.6 hrs</span></div>
+            <div class="progress" style="height:8px"><div class="progress-bar" style="width:56%"></div></div>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between"><span class="text-muted-sm">Total recorded</span><span class="fw-semibold">4.9 of 5.6 hrs</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Announcements</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><div class="fw-semibold">Assignment due 28 August</div><div class="text-muted-sm">Workplace Hazard Observation Report</div></li>
+          <li class="list-group-item"><div class="fw-semibold">Material 2 is now open</div><div class="text-muted-sm">Emergency Response Procedures video</div></li>
+          <li class="list-group-item"><div class="fw-semibold">Certificate released</div><div class="text-muted-sm">Fire Safety and Evacuation Drill</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'student-courses',
+  title: 'My Courses',
+  sub: 'Your enrolled training programmes and current progress',
+  perm: 'student.courses'
+});
+
+(function () {
+  const stats = [
+    { label: 'Enrolled courses', value: '3', icon: 'bi-journal-bookmark', note: '1 in progress' },
+    { label: 'Overall progress', value: '62%', icon: 'bi-graph-up-arrow', note: 'Workplace Safety Training' },
+    { label: 'Engagement hours', value: '4.9', icon: 'bi-hourglass-split', note: 'of 5.6 required' },
+    { label: 'Certificates earned', value: '1', icon: 'bi-award', note: 'Fire Safety and Evacuation Drill' }
+  ];
+  LMS.render('#statRow', stats.map(s =>
+    '<div class="col-6 col-xl-3"><div class="card stat-card h-100">' +
+      '<div class="d-flex justify-content-between align-items-start">' +
+        '<div><div class="stat-label">' + s.label + '</div><div class="stat-value">' + s.value + '</div></div>' +
+        '<div class="stat-icon"><i class="bi ' + s.icon + '"></i></div>' +
+      '</div><div class="text-muted-sm mt-2">' + s.note + '</div>' +
+    '</div></div>').join(''));
+
+  LMS.render('#courseList', LMSData.studentCourses.map(c => {
+    const action = c.available
+      ? (c.status === 'Completed'
+          ? '<a href="student-certificates.html" class="btn btn-outline-primary btn-sm"><i class="bi bi-award me-1"></i>View certificate</a>'
+          : '<a href="student-course.html" class="btn btn-primary btn-sm"><i class="bi bi-play-fill me-1"></i>Continue course</a>')
+      : '<button class="btn btn-outline-secondary btn-sm" disabled><i class="bi bi-lock me-1"></i>Locked</button>';
+    return '<div class="border rounded p-3 mb-2' + (c.available ? '' : ' bg-light') + '">' +
+      '<div class="d-flex flex-wrap justify-content-between align-items-start gap-2">' +
+        '<div>' +
+          '<div class="fw-semibold" style="color:var(--lms-navy)">' + c.title + '</div>' +
+          '<div class="text-muted-sm">' + c.code + ' &middot; ' + c.instructor + '</div>' +
+          '<div class="text-muted-sm mt-1"><i class="bi ' + (c.available ? 'bi-unlock' : 'bi-lock') + ' me-1"></i>' + c.note + '</div>' +
+        '</div>' +
+        '<div class="text-end">' + LMS.statusBadge(c.status) + '<div class="mt-2">' + action + '</div></div>' +
+      '</div>' +
+      '<div class="mt-3">' + LMS.progressBar(c.progress) + '</div>' +
+    '</div>';
+  }).join(''));
+})();
+</script>
+</body>
+</html>

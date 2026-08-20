@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Final Assessment</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div id="pageActionSource" hidden>
+    <a href="student-course.html" class="btn btn-outline-secondary btn-sm">Back to course</a>
+  </div>
+
+  <div class="alert alert-warning d-flex gap-2 align-items-start">
+    <i class="bi bi-lock-fill fs-5"></i>
+    <div class="small">
+      <strong>The quiz is locked until all learning materials are completed.</strong>
+      Materials 2 and 3 are still outstanding. The assessment screen is shown here so the interface can be reviewed.
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-8">
+      <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>Workplace Safety Final Assessment</span>
+          <span class="badge-soft badge-blue"><i class="bi bi-clock me-1"></i><span id="clock">30:00</span> remaining</span>
+        </div>
+        <div class="card-body">
+          <form id="quizForm" data-demo-form="Answers submitted. Objective items are graded automatically." novalidate>
+            <div id="questionList"></div>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted-sm">Attempt 1 of 2 &middot; passing score 75%</span>
+              <button type="submit" class="btn btn-primary"><i class="bi bi-send me-1"></i>Submit assessment</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card mb-3">
+        <div class="card-header">Assessment details</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between"><span>Items</span><span class="fw-semibold">4 shown of 20</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Total points</span><span class="fw-semibold">25</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Passing score</span><span class="fw-semibold">75%</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Time limit</span><span class="fw-semibold">30 minutes</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Attempts allowed</span><span class="fw-semibold">2</span></li>
+        </ul>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">Question navigator</div>
+        <div class="card-body d-flex flex-wrap gap-2" id="navigator"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="demo-note"><i class="bi bi-info-circle me-1"></i>
+            Multiple choice and true or false items are graded automatically. Short answer items are routed to the Editing Teacher.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'student-courses',
+  title: 'Final Assessment',
+  sub: 'Workplace Safety Training',
+  perm: 'student.courses',
+  breadcrumb: [
+    { label: 'My Courses', href: 'student-courses.html' },
+    { label: 'Workplace Safety Training', href: 'student-course.html' },
+    { label: 'Final Assessment' }
+  ]
+});
+
+(function () {
+  LMS.render('#questionList', LMSData.quizQuestions.map(q => {
+    const body = q.options.length
+      ? q.options.map((o, i) =>
+          '<div class="form-check"><input class="form-check-input" type="radio" name="q' + q.no + '" id="q' + q.no + 'o' + i + '">' +
+          '<label class="form-check-label" for="q' + q.no + 'o' + i + '">' + o + '</label></div>').join('')
+      : '<textarea class="form-control" rows="3" placeholder="Type your answer"></textarea>';
+    return '<div class="border rounded p-3 mb-3">' +
+      '<div class="d-flex justify-content-between mb-2">' +
+        '<span class="fw-semibold" style="font-size:.9rem">Question ' + q.no + '</span>' +
+        '<span class="text-muted-sm">' + q.type + ' &middot; ' + q.points + ' points</span>' +
+      '</div>' +
+      '<p style="font-size:.9rem">' + q.text + '</p>' + body +
+    '</div>';
+  }).join(''));
+
+  LMS.render('#navigator', LMSData.quizQuestions.map(q =>
+    '<button type="button" class="btn btn-sm btn-outline-primary" style="width:38px" data-demo-action="Jumped to question ' + q.no + '.">' + q.no + '</button>').join(''));
+
+  let left = 30 * 60;
+  setInterval(function () {
+    if (left <= 0) return;
+    left--;
+    const m = String(Math.floor(left / 60)).padStart(2, '0');
+    const s = String(left % 60).padStart(2, '0');
+    document.getElementById('clock').textContent = m + ':' + s;
+  }, 1000);
+})();
+</script>
+</body>
+</html>

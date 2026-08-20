@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submit Assignment</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div id="pageActionSource" hidden>
+    <a href="student-assignments.html" class="btn btn-outline-secondary btn-sm">Back to assignments</a>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-8">
+      <div class="card mb-3">
+        <div class="card-header">Workplace Hazard Observation Report</div>
+        <div class="card-body">
+          <div class="row g-3 mb-3">
+            <div class="col-md-4"><div class="text-muted-sm">Course</div><div class="fw-semibold small">Workplace Safety Training</div></div>
+            <div class="col-md-4"><div class="text-muted-sm">Due date</div><div class="fw-semibold small">28 August 2026, 23:59</div></div>
+            <div class="col-md-4"><div class="text-muted-sm">Points</div><div class="fw-semibold small">50</div></div>
+          </div>
+          <hr>
+          <div class="fw-semibold small mb-2" style="color:var(--lms-navy)">Instructions</div>
+          <p class="text-muted-sm">
+            Walk through your assigned work area and identify at least five hazards. For each hazard, record the location, the category, who could be harmed, the current control in place, and your recommended corrective action. Submit as a single PDF or DOCX file.
+          </p>
+          <div class="fw-semibold small mb-2 mt-3" style="color:var(--lms-navy)">Requirements</div>
+          <ul class="condition-list">
+            <li><i class="bi bi-check-circle-fill"></i><span>Minimum of five hazards documented</span></li>
+            <li><i class="bi bi-check-circle-fill"></i><span>Photographs attached where safe to take</span></li>
+            <li><i class="bi bi-check-circle-fill"></i><span>Recommended corrective action for each hazard</span></li>
+            <li><i class="bi bi-check-circle-fill"></i><span>Required for course completion</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Upload your work</div>
+        <div class="card-body">
+          <form data-demo-form="Assignment submitted. This UI demo does not upload files." data-demo-return="student-assignments.html" novalidate>
+            <div class="locked-overlay mb-3">
+              <i class="bi bi-cloud-arrow-up fs-2 d-block mb-2"></i>
+              <div class="fw-semibold small" style="color:var(--lms-navy)">Drag your file here or browse</div>
+              <div class="small">PDF, DOCX, or JPG up to 20 MB</div>
+            </div>
+            <div class="mb-3">
+              <input type="file" class="form-control" id="file" accept=".pdf,.docx,.jpg" required>
+              <div class="form-text">The file is validated before it is accepted.</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="note">Note to your instructor (optional)</label>
+              <textarea class="form-control" id="note" rows="3" placeholder="Anything the instructor should know about your submission"></textarea>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="declare" required>
+              <label class="form-check-label small" for="declare">I confirm this is my own work and the observations are accurate.</label>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-upload me-1"></i>Submit assignment</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card mb-3">
+        <div class="card-header">Current submission</div>
+        <div class="card-body">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="bi bi-file-earmark-pdf fs-3 text-danger"></i>
+            <div>
+              <div class="fw-semibold small">hazard-report-torres.pdf</div>
+              <div class="text-muted-sm">1.2 MB &middot; 19 Aug 2026, 21:04</div>
+            </div>
+          </div>
+          <span class="badge-soft badge-blue">Submitted &mdash; awaiting grading</span>
+          <div class="form-text mt-2">Uploading a new file replaces this submission.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="demo-note"><i class="bi bi-info-circle me-1"></i>
+            No file is uploaded in this UI demo. The form shows the submission interface only.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'student-assignments',
+  title: 'Submit Assignment',
+  sub: 'Workplace Hazard Observation Report',
+  perm: 'student.assignments',
+  breadcrumb: [{ label: 'My Assignments', href: 'student-assignments.html' }, { label: 'Submit Assignment' }]
+});
+</script>
+</body>
+</html>

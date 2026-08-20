@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports &amp; Analytics</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div id="pageActionSource" hidden>
+    <button class="btn btn-soft btn-sm" data-perm="reports.export" data-demo-action="CSV export started. No file is generated in this UI demo.">
+      <i class="bi bi-filetype-csv me-1"></i>Export CSV
+    </button>
+    <button class="btn btn-primary btn-sm" data-perm="reports.export" data-demo-action="PDF export started. No file is generated in this UI demo.">
+      <i class="bi bi-filetype-pdf me-1"></i>Export PDF
+    </button>
+  </div>
+
+  <div class="alert alert-light border d-flex gap-2 align-items-start" data-role-only="non_editing_teacher" style="border-color:var(--lms-border) !important">
+    <i class="bi bi-eye fs-5" style="color:var(--lms-blue)"></i>
+    <div class="small"><strong>Monitoring access.</strong> You can read every report on this page, but exporting is limited to System Administration, Managers, and Administrators.</div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Total enrolments</div><div class="stat-value">157</div><div class="text-muted-sm mt-1">Across 4 active courses</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Completion rate</div><div class="stat-value">68%</div><div class="text-muted-sm mt-1">+6% vs last period</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Average score</div><div class="stat-value">82%</div><div class="text-muted-sm mt-1">132 graded assessments</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Certificates issued</div><div class="stat-value">148</div><div class="text-muted-sm mt-1">2 pending validation</div></div></div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-lg-7">
+      <div class="card h-100">
+        <div class="card-header">Monthly enrolment and completion</div>
+        <div class="card-body">
+          <div class="bar-chart" id="monthChart"></div>
+          <div class="d-flex gap-3 mt-3 pt-2 border-top">
+            <span class="text-muted-sm"><span class="legend-dot" style="background:var(--lms-blue)"></span> Enrolments</span>
+            <span class="text-muted-sm"><span class="legend-dot" style="background:#7fb0e6"></span> Completions</span>
+            <span class="text-muted-sm ms-auto">Number of learners, March to August 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="card-header">Engagement hours by delivery mode</div>
+        <div class="card-body">
+          <div class="mb-3">
+            <div class="d-flex justify-content-between text-muted-sm mb-1"><span>Synchronous (Google Meet and on-site)</span><span>612 hrs</span></div>
+            <div class="progress" style="height:9px"><div class="progress-bar" style="width:64%"></div></div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between text-muted-sm mb-1"><span>Asynchronous (SCORM and videos)</span><span>287 hrs</span></div>
+            <div class="progress" style="height:9px"><div class="progress-bar" style="width:30%;background:#7fb0e6"></div></div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between text-muted-sm mb-1"><span>Reading materials and exercises</span><span>58 hrs</span></div>
+            <div class="progress" style="height:9px"><div class="progress-bar" style="width:6%;background:#a9c8ea"></div></div>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between"><span class="text-muted-sm">Total recorded engagement</span><span class="fw-semibold">957 hrs</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header">Report catalogue</div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead><tr><th>Report</th><th>Description</th><th>Records</th><th>Last generated</th><th class="text-end">Actions</th></tr></thead>
+        <tbody id="reportRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Course performance</div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead><tr><th>Course</th><th>Enrolled</th><th>Completed</th><th>Completion rate</th><th>Average score</th><th>Certificates</th></tr></thead>
+        <tbody id="perfRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'reports',
+  title: 'Reports & Analytics',
+  sub: 'Enrolment, completion, grades, attendance, and certificate reporting',
+  perm: 'reports.view',
+  breadcrumb: [{ label: 'Monitoring', href: 'dashboard.html' }, { label: 'Reports & Analytics' }]
+});
+
+(function () {
+  const canExport = LMSAuth.can('reports.export');
+
+  const months = [
+    { label: 'Mar', enrol: 22, done: 14 }, { label: 'Apr', enrol: 28, done: 19 },
+    { label: 'May', enrol: 31, done: 24 }, { label: 'Jun', enrol: 26, done: 21 },
+    { label: 'Jul', enrol: 34, done: 27 }, { label: 'Aug', enrol: 41, done: 18 }
+  ];
+  LMS.render('#monthChart', months.map(m =>
+    '<div class="bar-col">' +
+      '<div class="bar-value">' + m.enrol + '</div>' +
+      '<div class="d-flex align-items-end gap-1 w-100 justify-content-center" style="height:100%">' +
+        '<div class="bar-fill" style="height:' + (m.enrol / 45 * 100) + '%;max-width:20px"></div>' +
+        '<div class="bar-fill alt" style="height:' + (m.done / 45 * 100) + '%;max-width:20px"></div>' +
+      '</div>' +
+      '<div class="bar-label">' + m.label + '</div>' +
+    '</div>').join(''));
+
+  LMS.render('#reportRows', LMSData.reportCatalog.map(r =>
+    '<tr>' +
+      '<td class="fw-semibold">' + r.name + '</td>' +
+      '<td class="text-muted-sm">' + r.desc + '</td>' +
+      '<td>' + r.records + '</td>' +
+      '<td class="text-muted-sm">' + r.updated + '</td>' +
+      '<td class="text-end">' +
+        '<button class="btn btn-sm btn-outline-secondary py-0 px-2" data-demo-action="Report preview opens here."><i class="bi bi-eye"></i></button> ' +
+        (canExport
+          ? '<button class="btn btn-sm btn-outline-primary py-0 px-2" data-demo-action="' + r.name + ' export started (CSV)."><i class="bi bi-download"></i></button>'
+          : '<span class="text-muted-sm ms-1"><i class="bi bi-lock"></i> No export</span>') +
+      '</td>' +
+    '</tr>').join(''));
+
+  const perf = [
+    { course: 'Workplace Safety Training', enrolled: 48, completed: 34, rate: 71, score: 84, certs: 34 },
+    { course: 'Data Privacy Act Awareness', enrolled: 62, completed: 33, rate: 54, score: 81, certs: 33 },
+    { course: 'Fire Safety and Evacuation Drill', enrolled: 35, completed: 35, rate: 100, score: 88, certs: 35 },
+    { course: 'IT Security Essentials', enrolled: 12, completed: 1, rate: 8, score: 79, certs: 1 }
+  ];
+  LMS.render('#perfRows', perf.map(p =>
+    '<tr>' +
+      '<td class="fw-semibold">' + p.course + '</td>' +
+      '<td>' + p.enrolled + '</td><td>' + p.completed + '</td>' +
+      '<td style="min-width:150px">' + LMS.progressBar(p.rate) + '</td>' +
+      '<td>' + p.score + '%</td><td>' + p.certs + '</td>' +
+    '</tr>').join(''));
+})();
+</script>
+</body>
+</html>

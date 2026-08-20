@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div id="pageActionSource" hidden>
+    <a href="reports.html" class="btn btn-soft btn-sm" data-perm="reports.view"><i class="bi bi-bar-chart me-1"></i>Open reports</a>
+    <a href="course-form.html" class="btn btn-primary btn-sm" data-perm="courses.manage"><i class="bi bi-plus-lg me-1"></i>New course</a>
+  </div>
+
+  <div class="row g-3 mb-3" id="statRow"></div>
+
+  <div class="row g-3">
+    <div class="col-lg-8">
+      <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>Course completion by programme</span>
+          <span class="text-muted-sm">Current training period</span>
+        </div>
+        <div class="card-body">
+          <div class="bar-chart" id="completionChart"></div>
+          <div class="d-flex gap-3 mt-3 pt-2 border-top">
+            <span class="text-muted-sm"><span class="legend-dot" style="background:var(--lms-blue)"></span> Completed</span>
+            <span class="text-muted-sm"><span class="legend-dot" style="background:#7fb0e6"></span> In progress</span>
+            <span class="text-muted-sm ms-auto">Percentage of enrolled learners</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span id="tableTitle">Active courses</span>
+          <a href="courses.html" class="small text-decoration-none" id="tableLink">View all</a>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0" id="mainTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card mb-3">
+        <div class="card-header">Your access level</div>
+        <div class="card-body">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="bi bi-shield-lock fs-4" style="color:var(--lms-blue)"></i>
+            <div>
+              <div class="fw-semibold" id="roleName" style="color:var(--lms-navy)"></div>
+              <div class="text-muted-sm" id="roleSummary"></div>
+            </div>
+          </div>
+          <hr>
+          <div class="text-muted-sm mb-2">Permitted actions</div>
+          <ul class="condition-list" id="permList"></ul>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">Upcoming sessions</div>
+        <ul class="list-group list-group-flush" id="sessionList"></ul>
+      </div>
+
+      <div class="card" data-perm="certificates.view|progress.view">
+        <div class="card-header">Certificate of Attendance queue</div>
+        <ul class="list-group list-group-flush" id="coaList"></ul>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'dashboard',
+  title: 'Dashboard',
+  sub: 'Training overview for the current period',
+  anyOf: ['users.view', 'courses.view', 'grade', 'attendance.view', 'progress.view']
+});
+
+(function () {
+  const user = LMSAuth.current();
+  const role = LMSAuth.roles[user.role];
+
+  /* Stat cards differ by what the role is responsible for. */
+  const statsByRole = {
+    manage: [
+      { label: 'Total learners', value: '157', icon: 'bi-people', note: '12 enrolled this week' },
+      { label: 'Active courses', value: '4', icon: 'bi-journal-bookmark', note: '1 draft, 1 scheduled' },
+      { label: 'Completion rate', value: '68%', icon: 'bi-graph-up-arrow', note: '+6% vs last period' },
+      { label: 'Certificates issued', value: '148', icon: 'bi-award', note: '2 pending validation' }
+    ],
+    grade: [
+      { label: 'Awaiting grading', value: '18', icon: 'bi-clipboard-check', note: 'Quizzes and assignments' },
+      { label: 'Assigned courses', value: '2', icon: 'bi-journal-bookmark', note: 'Workplace Safety, Fire Safety' },
+      { label: 'Average quiz score', value: '82%', icon: 'bi-percent', note: 'Across 31 submissions' },
+      { label: 'Learners below passing', value: '2', icon: 'bi-exclamation-triangle', note: 'Retake available' }
+    ],
+    monitor: [
+      { label: 'Learners monitored', value: '157', icon: 'bi-people', note: 'Across 4 active courses' },
+      { label: 'On track', value: '112', icon: 'bi-check2-circle', note: 'Meeting engagement hours' },
+      { label: 'Incomplete hours', value: '31', icon: 'bi-hourglass-split', note: 'Below required minimum' },
+      { label: 'At risk', value: '14', icon: 'bi-exclamation-triangle', note: 'Under 25% progress' }
+    ]
+  };
+
+  const group = LMSAuth.can('users.view') ? 'manage' : (LMSAuth.can('grade') ? 'grade' : 'monitor');
+  LMS.render('#statRow', statsByRole[group].map(s =>
+    '<div class="col-6 col-xl-3"><div class="card stat-card h-100">' +
+      '<div class="d-flex justify-content-between align-items-start">' +
+        '<div><div class="stat-label">' + s.label + '</div><div class="stat-value">' + s.value + '</div></div>' +
+        '<div class="stat-icon"><i class="bi ' + s.icon + '"></i></div>' +
+      '</div>' +
+      '<div class="text-muted-sm mt-2">' + s.note + '</div>' +
+    '</div></div>').join(''));
+
+  /* Completion chart (static values, CSS bars). */
+  const chart = [
+    { label: 'Workplace Safety', done: 71, wip: 29 },
+    { label: 'Data Privacy', done: 54, wip: 46 },
+    { label: 'Fire Safety', done: 100, wip: 0 },
+    { label: 'IT Security', done: 8, wip: 92 }
+  ];
+  LMS.render('#completionChart', chart.map(c =>
+    '<div class="bar-col">' +
+      '<div class="bar-value">' + c.done + '%</div>' +
+      '<div class="bar-fill alt" style="height:' + (c.wip * 0.55) + '%"></div>' +
+      '<div class="bar-fill" style="height:' + (c.done * 0.55) + '%"></div>' +
+      '<div class="bar-label">' + c.label + '</div>' +
+    '</div>').join(''));
+
+  /* Main table: courses for managers, grading queue for teachers, progress for monitors. */
+  let head, rows, title, link, href;
+  if (group === 'grade') {
+    title = 'Awaiting your grading';
+    link = 'Open gradebook'; href = 'gradebook.html';
+    head = ['Student', 'Course', 'Item', 'Submitted', 'Status'];
+    rows = LMSData.submissions.map(s =>
+      '<tr><td class="fw-semibold">' + s.student + '</td><td>' + (s.assignment.indexOf('Privacy') > -1 ? 'Data Privacy Act Awareness' : 'Workplace Safety Training') +
+      '</td><td>' + s.assignment + '</td><td class="text-muted-sm">' + s.submitted + '</td><td>' + LMS.statusBadge(s.status) + '</td></tr>');
+  } else if (group === 'monitor') {
+    title = 'Learner progress overview';
+    link = 'Open progress'; href = 'progress.html';
+    head = ['Student', 'Course', 'Engagement hours', 'Progress', 'Certificate'];
+    rows = LMSData.progress.map(p =>
+      '<tr><td class="fw-semibold">' + p.student + '</td><td>' + p.course + '</td><td class="text-muted-sm">' + p.engagement +
+      '</td><td style="min-width:130px">' + LMS.progressBar(p.percent) + '</td><td>' +
+      LMS.badge(p.coa, p.coa === 'Eligible' ? 'green' : 'grey') + '</td></tr>');
+  } else {
+    title = 'Active courses';
+    link = 'View all'; href = 'courses.html';
+    head = ['Course', 'Instructor', 'Enrolled', 'Required hours', 'Status'];
+    rows = LMSData.courses.map(c =>
+      '<tr><td><div class="fw-semibold">' + c.title + '</div><div class="text-muted-sm">' + c.code + '</div></td>' +
+      '<td>' + c.instructor + '</td><td>' + c.enrolled + '</td>' +
+      '<td class="text-muted-sm">' + c.minTotal + ' hrs total</td><td>' + LMS.statusBadge(c.status) + '</td></tr>');
+  }
+  document.getElementById('tableTitle').textContent = title;
+  const linkEl = document.getElementById('tableLink');
+  linkEl.textContent = link; linkEl.href = href;
+  LMS.render('#mainTable',
+    '<thead><tr>' + head.map(h => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' + rows.join('') + '</tbody>');
+
+  /* Access level card. */
+  document.getElementById('roleName').textContent = role.label;
+  document.getElementById('roleSummary').textContent = role.summary;
+  const permLabels = {
+    'users.create': 'Create user accounts',
+    'courses.manage': 'Create and edit courses',
+    'schedule.manage': 'Set course schedules',
+    'enroll.manage': 'Enrol students',
+    'grade': 'Grade students',
+    'certificates.manage': 'Upload and issue certificates',
+    'reports.export': 'Export reports',
+    'system.admin': 'System administration',
+    'attendance.view': 'View attendance',
+    'progress.view': 'View student progress'
+  };
+  const shown = Object.keys(permLabels).filter(p => LMSAuth.can(p));
+  const denied = Object.keys(permLabels).filter(p => !LMSAuth.can(p));
+  LMS.render('#permList',
+    shown.map(p => '<li><i class="bi bi-check-circle-fill"></i><span>' + permLabels[p] + '</span></li>').join('') +
+    denied.map(p => '<li><i class="bi bi-lock-fill"></i><span class="text-muted">' + permLabels[p] + '</span></li>').join(''));
+
+  LMS.render('#sessionList', LMSData.schedule.slice(0, 4).map(s =>
+    '<li class="list-group-item">' +
+      '<div class="d-flex justify-content-between"><span class="fw-semibold">' + s.course + '</span>' + LMS.statusBadge(s.window.startsWith('Locked') ? 'Locked' : s.window) + '</div>' +
+      '<div class="text-muted-sm">' + s.day + ', ' + s.time + ' &middot; ' + s.mode + '</div>' +
+    '</li>').join(''));
+
+  LMS.render('#coaList', LMSData.certificates.slice(0, 4).map(c =>
+    '<li class="list-group-item">' +
+      '<div class="d-flex justify-content-between align-items-start">' +
+        '<div><div class="fw-semibold">' + c.student + '</div><div class="text-muted-sm">' + c.course + '</div></div>' +
+        LMS.statusBadge(c.status) +
+      '</div>' +
+      '<div class="text-muted-sm mt-1">' + c.validated + '</div>' +
+    '</li>').join(''));
+})();
+</script>
+</body>
+</html>

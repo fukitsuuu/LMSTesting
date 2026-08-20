@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gradebook</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div id="pageActionSource" hidden>
+    <button class="btn btn-soft btn-sm" data-perm="reports.export" data-demo-action="Gradebook export started (CSV).">
+      <i class="bi bi-download me-1"></i>Export grades
+    </button>
+    <button class="btn btn-primary btn-sm" data-demo-action="Grades released to learners. Display only in this UI demo.">
+      <i class="bi bi-send me-1"></i>Release grades
+    </button>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Graded</div><div class="stat-value">114</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Pending</div><div class="stat-value">18</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Class average</div><div class="stat-value">82%</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Below passing</div><div class="stat-value">2</div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <span>Grade records</span>
+      <select class="form-select form-select-sm" id="courseFilter" style="width:250px">
+        <option value="">All assigned courses</option>
+      </select>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr><th>Student</th><th>Course</th><th>Quiz</th><th>Assignment</th><th>Final grade</th><th>Remark</th><th class="text-end">Actions</th></tr>
+        </thead>
+        <tbody id="gradeRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-header">Score distribution</div>
+    <div class="card-body">
+      <div class="bar-chart" id="scoreChart"></div>
+      <div class="text-muted-sm mt-3 pt-2 border-top">Number of learners per score band, all assigned courses</div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'gradebook',
+  title: 'Gradebook',
+  sub: 'Quiz and assignment results for your assigned courses',
+  perm: 'grade',
+  breadcrumb: [{ label: 'Learning', href: 'dashboard.html' }, { label: 'Gradebook' }]
+});
+
+(function () {
+  const filter = document.getElementById('courseFilter');
+  LMSData.courses.forEach(c => filter.insertAdjacentHTML('beforeend', '<option>' + c.title + '</option>'));
+
+  function draw() {
+    const course = filter.value;
+    const list = LMSData.gradebook.filter(g => !course || g.course === course);
+    LMS.render('#gradeRows', list.map(g =>
+      '<tr>' +
+        '<td><div class="fw-semibold">' + g.student + '</div><div class="text-muted-sm">' + g.studentId + '</div></td>' +
+        '<td class="text-muted-sm">' + g.course + '</td>' +
+        '<td>' + (g.quiz !== null ? g.quiz + '%' : '<span class="text-muted-sm">&mdash;</span>') + '</td>' +
+        '<td>' + (g.assignment !== null ? g.assignment + '/50' : '<span class="text-muted-sm">Not graded</span>') + '</td>' +
+        '<td>' + (g.final !== null ? '<span class="fw-semibold">' + g.final + '%</span>' : '<span class="text-muted-sm">Pending</span>') + '</td>' +
+        '<td>' + LMS.badge(g.remark, g.remark === 'Passed' ? 'green' : (g.remark.indexOf('Below') === 0 ? 'red' : 'amber')) + '</td>' +
+        '<td class="text-end">' +
+          '<a href="quiz-grade.html" class="btn btn-sm btn-outline-primary py-0 px-2" title="Grade quiz"><i class="bi bi-patch-question"></i></a> ' +
+          '<a href="assignment-grade.html" class="btn btn-sm btn-outline-primary py-0 px-2" title="Grade assignment"><i class="bi bi-file-earmark-text"></i></a>' +
+        '</td>' +
+      '</tr>').join('') || '<tr><td colspan="7" class="text-center text-muted py-4">No grade records for this course.</td></tr>');
+  }
+  filter.addEventListener('change', draw);
+  draw();
+
+  const bands = [
+    { label: '90-100', count: 24 }, { label: '80-89', count: 41 },
+    { label: '75-79', count: 33 }, { label: '60-74', count: 14 }, { label: 'Below 60', count: 2 }
+  ];
+  const max = 45;
+  LMS.render('#scoreChart', bands.map(b =>
+    '<div class="bar-col">' +
+      '<div class="bar-value">' + b.count + '</div>' +
+      '<div class="bar-fill" style="height:' + (b.count / max * 100) + '%"></div>' +
+      '<div class="bar-label">' + b.label + '</div>' +
+    '</div>').join(''));
+})();
+</script>
+</body>
+</html>

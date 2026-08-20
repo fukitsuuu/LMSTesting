@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz Builder</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div id="pageActionSource" hidden>
+    <a href="quizzes.html" class="btn btn-outline-secondary btn-sm">Cancel</a>
+    <button class="btn btn-primary btn-sm" data-demo-action="Quiz published. This UI demo does not store records.">
+      <i class="bi bi-check2 me-1"></i>Publish quiz
+    </button>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-8">
+      <div class="card mb-3">
+        <div class="card-header">Quiz settings</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label" for="qTitle">Quiz title</label>
+              <input class="form-control" id="qTitle" value="Workplace Safety Final Assessment">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="qCourse">Course</label>
+              <select class="form-select" id="qCourse"></select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label" for="qDuration">Time limit</label>
+              <div class="input-group"><input type="number" class="form-control" id="qDuration" value="30"><span class="input-group-text">min</span></div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label" for="qPassing">Passing score</label>
+              <div class="input-group"><input type="number" class="form-control" id="qPassing" value="75"><span class="input-group-text">%</span></div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label" for="qAttempts">Allowed attempts</label>
+              <input type="number" class="form-control" id="qAttempts" value="2">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label" for="qAvailable">Available until</label>
+              <input type="date" class="form-control" id="qAvailable" value="2026-09-04">
+            </div>
+            <div class="col-12">
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="qShuffle" checked><label class="form-check-label" for="qShuffle">Shuffle question order for each attempt</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="qAuto" checked><label class="form-check-label" for="qAuto">Grade objective items automatically on submission</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="qLock" checked><label class="form-check-label" for="qLock">Unlock only after all learning materials are completed</label></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>Questions</span>
+          <span class="text-muted-sm">4 items &middot; 25 points</span>
+        </div>
+        <div class="card-body" id="questionList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Add question</div>
+        <div class="card-body">
+          <form data-demo-form="Question added. This UI demo does not store records." novalidate>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label" for="newType">Question type</label>
+                <select class="form-select" id="newType">
+                  <option>Multiple Choice</option>
+                  <option>True or False</option>
+                  <option>Matching Type</option>
+                  <option>Short Answer</option>
+                  <option>Essay</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="newPoints">Points</label>
+                <input type="number" class="form-control" id="newPoints" value="5">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="newGrading">Grading</label>
+                <select class="form-select" id="newGrading">
+                  <option>Automated</option>
+                  <option>Manual</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="newText">Question text</label>
+                <textarea class="form-control" id="newText" rows="2" required></textarea>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Answer options</label>
+                <div class="row g-2">
+                  <div class="col-md-6"><div class="input-group"><span class="input-group-text"><input class="form-check-input mt-0" type="radio" name="correct" checked></span><input class="form-control" placeholder="Option A"></div></div>
+                  <div class="col-md-6"><div class="input-group"><span class="input-group-text"><input class="form-check-input mt-0" type="radio" name="correct"></span><input class="form-control" placeholder="Option B"></div></div>
+                  <div class="col-md-6"><div class="input-group"><span class="input-group-text"><input class="form-check-input mt-0" type="radio" name="correct"></span><input class="form-control" placeholder="Option C"></div></div>
+                  <div class="col-md-6"><div class="input-group"><span class="input-group-text"><input class="form-check-input mt-0" type="radio" name="correct"></span><input class="form-control" placeholder="Option D"></div></div>
+                </div>
+                <div class="form-text">Select the radio button beside the correct answer.</div>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add question</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card mb-3">
+        <div class="card-header">Question summary</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between"><span>Multiple choice</span><span class="fw-semibold">2</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>True or false</span><span class="fw-semibold">1</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Short answer</span><span class="fw-semibold">1</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Total points</span><span class="fw-semibold">25</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="demo-note"><i class="bi bi-info-circle me-1"></i>
+            Short answer and essay items are routed to the Editing Teacher for manual grading.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'quizzes',
+  title: 'Quiz Builder',
+  sub: 'Build assessment items and set automated grading',
+  perm: 'quiz.manage',
+  breadcrumb: [{ label: 'Learning', href: 'dashboard.html' }, { label: 'Quizzes & Exams', href: 'quizzes.html' }, { label: 'Quiz Builder' }]
+});
+
+(function () {
+  document.getElementById('qCourse').innerHTML = LMSData.courses.map(c => '<option>' + c.title + '</option>').join('');
+
+  LMS.render('#questionList', LMSData.quizQuestions.map(q =>
+    '<div class="border rounded p-3 mb-2">' +
+      '<div class="d-flex justify-content-between align-items-start mb-2">' +
+        '<div class="d-flex gap-2">' +
+          '<span class="badge-soft badge-blue">Q' + q.no + '</span>' +
+          '<div><div class="fw-semibold" style="font-size:.88rem">' + q.text + '</div>' +
+          '<div class="text-muted-sm">' + q.type + ' &middot; ' + q.points + ' points</div></div>' +
+        '</div>' +
+        '<div class="d-flex gap-1">' +
+          '<button class="btn btn-sm btn-outline-primary py-0 px-2" data-demo-action="Question editor opens here."><i class="bi bi-pencil"></i></button>' +
+          '<button class="btn btn-sm btn-outline-secondary py-0 px-2" data-demo-action="Question removal is display-only in this UI demo."><i class="bi bi-trash"></i></button>' +
+        '</div>' +
+      '</div>' +
+      (q.options.length
+        ? '<ul class="condition-list ms-4">' + q.options.map((o, i) =>
+            '<li><i class="bi ' + (i === 1 ? 'bi-check-circle-fill' : 'bi-circle') + '"></i><span>' + o + '</span></li>').join('') + '</ul>'
+        : '<div class="text-muted-sm ms-4">Free-text response, graded manually.</div>') +
+    '</div>').join(''));
+})();
+</script>
+</body>
+</html>

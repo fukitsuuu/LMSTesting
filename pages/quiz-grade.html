@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grade Quiz Submissions</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div id="pageActionSource" hidden>
+    <a href="gradebook.html" class="btn btn-outline-secondary btn-sm">Open gradebook</a>
+    <button class="btn btn-primary btn-sm" data-demo-action="Grades released and learners notified by email. Display only in this UI demo.">
+      <i class="bi bi-send me-1"></i>Release grades
+    </button>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-5">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>Submissions</span>
+          <span class="badge-soft badge-amber">2 need manual grading</span>
+        </div>
+        <div class="list-group list-group-flush" id="subList"></div>
+      </div>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="card mb-3">
+        <div class="card-header">Workplace Safety Final Assessment &mdash; Jasmine Torres</div>
+        <div class="card-body">
+          <div class="row g-3 mb-3">
+            <div class="col-4"><div class="text-muted-sm">Attempt</div><div class="fw-semibold">1 of 2</div></div>
+            <div class="col-4"><div class="text-muted-sm">Time used</div><div class="fw-semibold">22 of 30 min</div></div>
+            <div class="col-4"><div class="text-muted-sm">Auto-graded score</div><div class="fw-semibold">15 of 15</div></div>
+          </div>
+
+          <form data-demo-form="Grade saved and learner notified. This UI demo does not store records." novalidate>
+            <div id="answerList"></div>
+
+            <hr>
+            <div class="row g-3 align-items-end">
+              <div class="col-md-4">
+                <label class="form-label" for="finalScore">Final score</label>
+                <div class="input-group"><input type="number" class="form-control" id="finalScore" value="22"><span class="input-group-text">of 25</span></div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="remark">Remark</label>
+                <select class="form-select" id="remark"><option>Passed</option><option>Failed</option><option>For retake</option></select>
+              </div>
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-check2 me-1"></i>Save grade</button>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="feedback">Feedback to learner</label>
+                <textarea class="form-control" id="feedback" rows="2" placeholder="Optional comments"></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="demo-note"><i class="bi bi-info-circle me-1"></i>
+            Editing Teachers can grade submissions but cannot create courses, schedules, certificates, or exports.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'quizzes',
+  title: 'Grade Quiz Submissions',
+  sub: 'Objective items are graded automatically; free-text items are graded here',
+  perm: 'grade',
+  breadcrumb: [{ label: 'Learning', href: 'dashboard.html' }, { label: 'Quizzes & Exams', href: 'quizzes.html' }, { label: 'Grade Submissions' }]
+});
+
+(function () {
+  const submissions = [
+    { name: 'Jasmine Torres', id: 'S-2001', when: '2026-08-19 20:41', status: 'Submitted', auto: '15/15', active: true },
+    { name: 'Mark Delos Santos', id: 'S-2002', when: '2026-08-18 14:02', status: 'Graded', auto: '15/15', active: false },
+    { name: 'Angel Ramos', id: 'S-2003', when: '2026-08-20 08:55', status: 'Submitted', auto: '11/15', active: false },
+    { name: 'Ferdinand Lim', id: 'S-2004', when: '2026-08-17 09:30', status: 'Graded', auto: '13/15', active: false }
+  ];
+
+  LMS.render('#subList', submissions.map(s =>
+    '<a href="#" class="list-group-item list-group-item-action' + (s.active ? ' active-sub' : '') + '" ' +
+      'style="' + (s.active ? 'background:var(--lms-blue-50)' : '') + '" data-demo-action="Loading submission for ' + s.name + '.">' +
+      '<div class="d-flex justify-content-between align-items-start">' +
+        '<div><div class="fw-semibold">' + s.name + '</div><div class="text-muted-sm">' + s.id + ' &middot; ' + s.when + '</div></div>' +
+        '<div class="text-end">' + LMS.statusBadge(s.status) + '<div class="text-muted-sm mt-1">Auto ' + s.auto + '</div></div>' +
+      '</div>' +
+    '</a>').join(''));
+
+  LMS.render('#answerList', LMSData.quizQuestions.map(q => {
+    if (q.options.length) {
+      return '<div class="border rounded p-3 mb-2">' +
+        '<div class="d-flex justify-content-between">' +
+          '<div class="fw-semibold" style="font-size:.86rem">Q' + q.no + '. ' + q.text + '</div>' +
+          '<span class="badge-soft badge-green">' + q.points + '/' + q.points + '</span>' +
+        '</div>' +
+        '<div class="text-muted-sm mt-1">Learner answered: <strong>' + q.options[1] + '</strong> &middot; graded automatically</div>' +
+      '</div>';
+    }
+    return '<div class="border rounded p-3 mb-2" style="border-color:var(--lms-blue) !important">' +
+      '<div class="d-flex justify-content-between">' +
+        '<div class="fw-semibold" style="font-size:.86rem">Q' + q.no + '. ' + q.text + '</div>' +
+        '<span class="badge-soft badge-amber">Needs grading</span>' +
+      '</div>' +
+      '<div class="bg-light rounded p-2 my-2 small">An incident report documents what happened, when, where, and who was involved so that corrective action can be taken. It must be submitted within 24 hours of the incident.</div>' +
+      '<div class="d-flex align-items-center gap-2">' +
+        '<label class="form-label mb-0" for="q' + q.no + 'score">Score</label>' +
+        '<input type="number" class="form-control form-control-sm" id="q' + q.no + 'score" value="7" style="width:80px">' +
+        '<span class="text-muted-sm">of ' + q.points + ' points</span>' +
+      '</div>' +
+    '</div>';
+  }).join(''));
+})();
+</script>
+</body>
+</html>

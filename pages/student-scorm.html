@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learning Material 1</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div id="pageActionSource" hidden>
+    <a href="student-course.html" class="btn btn-outline-secondary btn-sm">Back to course</a>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-8">
+      <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>SCORM package &mdash; Workplace Hazard Identification</span>
+          <span class="badge-soft badge-green">Completed</span>
+        </div>
+        <div class="card-body">
+          <div class="doc-frame" id="scormFrame">
+            <h5 style="color:var(--lms-navy)">Workplace Hazard Identification</h5>
+            <p class="text-muted-sm">SCORM 1.2 package &middot; 8 pages &middot; interactive module</p>
+
+            <h6>Page 1. What is a workplace hazard?</h6>
+            <p>A hazard is any source of potential damage, harm, or adverse health effect on a person. Hazards exist in every workplace and may come from equipment, substances, work practices, or the environment itself.</p>
+
+            <h6>Page 2. Categories of hazards</h6>
+            <p>Physical hazards include noise, vibration, and extreme temperature. Chemical hazards include solvents, cleaning agents, and fumes. Biological hazards cover bacteria, viruses, and mould. Ergonomic hazards arise from repetitive movement and poor workstation design. Psychosocial hazards include excessive workload and workplace stress.</p>
+
+            <h6>Page 3. Identifying hazards in your area</h6>
+            <p>Walk through your work area and observe each task from start to finish. Ask what could go wrong, who could be harmed, and how severe the outcome would be. Review previous incident reports and near-miss records for patterns.</p>
+
+            <h6>Page 4. Personal protective equipment</h6>
+            <p>Personal protective equipment is the last line of defence, not the first. Engineering and administrative controls always take priority. Where PPE is required it must be worn correctly, inspected before use, and replaced when damaged.</p>
+
+            <h6>Page 5. Hazard reporting</h6>
+            <p>Report any hazard immediately to your supervisor or safety officer. Do not wait until the end of your shift. Reporting is not fault-finding; it is how the organisation prevents injury.</p>
+
+            <h6>Page 6. Risk assessment</h6>
+            <p>Each hazard is rated by likelihood and severity. High-risk items require immediate corrective action, medium-risk items require a scheduled control, and low-risk items are monitored.</p>
+
+            <h6>Page 7. Corrective action</h6>
+            <p>Corrective action must have a named owner and a target date. The safety officer verifies that the control is effective before closing the record.</p>
+
+            <h6>Page 8. Summary</h6>
+            <p>Identify, report, assess, control, and verify. Every worker shares responsibility for maintaining a safe workplace.</p>
+            <p class="text-muted-sm mt-4 pt-3 border-top" id="endMarker">End of module. You have reached the last page.</p>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-muted-sm">Scroll progress</span>
+            <span class="text-muted-sm" id="scrollPct">0%</span>
+          </div>
+          <div class="progress" style="height:6px"><div class="progress-bar" id="scrollBar" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Confirmation question</div>
+        <div class="card-body">
+          <p class="fw-semibold" style="font-size:.9rem">What is the first action you should take when you identify a workplace hazard?</p>
+          <div class="form-check"><input class="form-check-input" type="radio" name="confirm" id="c1"><label class="form-check-label" for="c1">Finish the task and report at the end of the shift</label></div>
+          <div class="form-check"><input class="form-check-input" type="radio" name="confirm" id="c2" checked><label class="form-check-label" for="c2">Report it immediately to your supervisor or safety officer</label></div>
+          <div class="form-check"><input class="form-check-input" type="radio" name="confirm" id="c3"><label class="form-check-label" for="c3">Attempt to repair the hazard yourself</label></div>
+          <button class="btn btn-primary btn-sm mt-3" data-demo-action="Confirmation answer accepted. Condition satisfied.">Submit answer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card mb-3">
+        <div class="card-header">Completion conditions</div>
+        <div class="card-body">
+          <ul class="condition-list" id="condList"></ul>
+          <hr>
+          <div class="d-flex justify-content-between text-muted-sm mb-1">
+            <span>Time on this material</span><span id="timeLabel">32 of 30 minutes</span>
+          </div>
+          <div class="progress mb-3" style="height:8px"><div class="progress-bar" style="width:100%"></div></div>
+          <button class="btn btn-outline-primary btn-sm w-100" disabled><i class="bi bi-check2-all me-1"></i>Marked as Completed</button>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">Package tracking</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between"><span>Lesson status</span><span class="fw-semibold">completed</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Score</span><span class="fw-semibold">100</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Standard</span><span class="fw-semibold">SCORM 1.2</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Resume point</span><span class="fw-semibold">Page 8</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="demo-note">
+            <i class="bi bi-arrow-down-circle me-1"></i>
+            All conditions satisfied. <strong>Learning Material 2</strong> is now unlocked.
+          </div>
+          <a href="student-video.html" class="btn btn-primary btn-sm w-100 mt-3">
+            Go to Learning Material 2 <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'student-courses',
+  title: 'Learning Material 1',
+  sub: 'SCORM Package - required time 30 minutes',
+  perm: 'student.courses',
+  breadcrumb: [
+    { label: 'My Courses', href: 'student-courses.html' },
+    { label: 'Workplace Safety Training', href: 'student-course.html' },
+    { label: 'Learning Material 1' }
+  ]
+});
+
+(function () {
+  const material = LMSData.materials[0];
+  LMS.render('#condList', material.conditions.map(c =>
+    '<li><i class="bi bi-check-circle-fill"></i><span>' + c.label + '</span></li>').join(''));
+
+  /* Scroll-to-last-page tracking for the reader pane. */
+  const frame = document.getElementById('scormFrame');
+  frame.addEventListener('scroll', function () {
+    const max = frame.scrollHeight - frame.clientHeight;
+    const pct = max > 0 ? Math.min(Math.round(frame.scrollTop / max * 100), 100) : 100;
+    document.getElementById('scrollPct').textContent = pct + '%';
+    document.getElementById('scrollBar').style.width = pct + '%';
+  });
+})();
+</script>
+</body>
+</html>

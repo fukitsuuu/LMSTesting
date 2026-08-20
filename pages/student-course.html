@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workplace Safety Training</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div id="pageActionSource" hidden>
+    <a href="student-courses.html" class="btn btn-outline-secondary btn-sm">Back to my courses</a>
+    <a href="student-assignments.html" class="btn btn-soft btn-sm"><i class="bi bi-file-earmark-text me-1"></i>Course assignment</a>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-7">
+          <div class="fw-semibold" style="color:var(--lms-navy);font-size:1.05rem">Workplace Safety Training</div>
+          <div class="text-muted-sm">WST-2026 &middot; Dr. Liza Manalo &middot; 03 Aug 2026 to 04 Sep 2026</div>
+          <p class="text-muted-sm mt-2 mb-0">
+            Mandatory occupational health and safety orientation covering hazard identification, emergency response, and incident reporting.
+          </p>
+        </div>
+        <div class="col-md-5">
+          <div class="d-flex justify-content-between text-muted-sm mb-1"><span>Course progress</span><span>62%</span></div>
+          <div class="progress mb-3" style="height:8px"><div class="progress-bar" style="width:62%"></div></div>
+          <div class="row text-center">
+            <div class="col"><div class="text-muted-sm">Materials</div><div class="fw-semibold">1 of 3</div></div>
+            <div class="col"><div class="text-muted-sm">Quiz</div><div class="fw-semibold">Locked</div></div>
+            <div class="col"><div class="text-muted-sm">Hours</div><div class="fw-semibold">4.9 / 5.6</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-8">
+      <div class="alert alert-light border d-flex gap-2 align-items-start" style="border-color:var(--lms-border) !important">
+        <i class="bi bi-diagram-2 fs-5" style="color:var(--lms-blue)"></i>
+        <div class="small">
+          <strong>Learning materials open in order.</strong>
+          The next material stays locked until every condition on the current one is satisfied. The quiz opens after all materials are completed.
+        </div>
+      </div>
+
+      <div id="materialList"></div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card mb-3">
+        <div class="card-header">Certificate of Attendance</div>
+        <div class="card-body">
+          <p class="text-muted-sm">Your certificate is released only when all of the following are satisfied.</p>
+          <ul class="condition-list" id="coaList"></ul>
+          <hr>
+          <button class="btn btn-outline-secondary btn-sm w-100" disabled>
+            <i class="bi bi-lock me-1"></i>Certificate not yet available
+          </button>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">Engagement hours recorded</div>
+        <div class="card-body">
+          <div class="mb-3">
+            <div class="d-flex justify-content-between text-muted-sm mb-1"><span>Synchronous (Google Meet)</span><span>4.0 / 4.0 hrs</span></div>
+            <div class="progress" style="height:8px"><div class="progress-bar" style="width:100%"></div></div>
+          </div>
+          <div class="mb-2">
+            <div class="d-flex justify-content-between text-muted-sm mb-1"><span>Asynchronous (LMS)</span><span>0.9 / 1.6 hrs</span></div>
+            <div class="progress" style="height:8px"><div class="progress-bar" style="width:56%"></div></div>
+          </div>
+          <div class="text-muted-sm mt-3">
+            Asynchronous time is recorded while you work through SCORM packages, videos, and reading materials.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Course completion flow</div>
+        <div class="card-body">
+          <div class="flow-step mb-1">Course published</div>
+          <div class="flow-arrow mb-1"><i class="bi bi-arrow-down"></i></div>
+          <div class="flow-step mb-1">Student opens course</div>
+          <div class="flow-arrow mb-1"><i class="bi bi-arrow-down"></i></div>
+          <div class="flow-step mb-1">Complete all conditions</div>
+          <div class="flow-arrow mb-1"><i class="bi bi-arrow-down"></i></div>
+          <div class="flow-step mb-1">Unlock next material</div>
+          <div class="flow-arrow mb-1"><i class="bi bi-arrow-down"></i></div>
+          <div class="flow-step mb-1">Engagement hours verified</div>
+          <div class="flow-arrow mb-1"><i class="bi bi-arrow-down"></i></div>
+          <div class="flow-step">Eligible for Certificate of Attendance</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'student-courses',
+  title: 'Workplace Safety Training',
+  sub: 'Sequential learning path',
+  perm: 'student.courses',
+  breadcrumb: [{ label: 'My Courses', href: 'student-courses.html' }, { label: 'Workplace Safety Training' }]
+});
+
+(function () {
+  LMS.render('#materialList', LMSData.materials.map((m, i) => {
+    const isLocked = m.status === 'locked';
+    const isDone = m.status === 'completed';
+    const cls = isDone ? ' is-done' : (isLocked ? ' is-locked' : '');
+
+    const conditions = m.conditions.map(c =>
+      '<li><i class="bi ' + (c.met ? 'bi-check-circle-fill' : (isLocked ? 'bi-lock-fill' : 'bi-circle')) + '"></i>' +
+      '<span' + (c.met ? '' : ' class="text-muted"') + '>' + c.label + '</span></li>').join('');
+
+    const restrictions = m.restrictions.length
+      ? '<div class="mt-2"><div class="text-muted-sm mb-1">Restrictions</div><ul class="condition-list">' +
+        m.restrictions.map(r => '<li><i class="bi bi-slash-circle" style="color:#b02a2a"></i><span class="text-muted">' + r + '</span></li>').join('') +
+        '</ul></div>'
+      : '';
+
+    let action;
+    if (isLocked) {
+      const blocker = LMSData.materials[i - 1];
+      action = '<button class="btn btn-outline-secondary btn-sm" disabled><i class="bi bi-lock me-1"></i>Locked</button>' +
+        '<div class="text-muted-sm mt-2 text-end">Unlocks after<br>' + blocker.title.split(' - ')[0] + '</div>';
+    } else if (isDone) {
+      action = '<a href="' + m.page + '" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-repeat me-1"></i>Review</a>';
+    } else {
+      action = '<a href="' + m.page + '" class="btn btn-primary btn-sm"><i class="bi bi-play-fill me-1"></i>Continue</a>';
+    }
+
+    const timeBar = m.requiredMinutes
+      ? '<div class="mt-3"><div class="d-flex justify-content-between text-muted-sm mb-1">' +
+        '<span>Time on material</span><span>' + m.timeSpent + ' of ' + m.requiredMinutes + ' minutes</span></div>' +
+        '<div class="progress" style="height:6px"><div class="progress-bar" style="width:' +
+        Math.min(Math.round(m.timeSpent / m.requiredMinutes * 100), 100) + '%"></div></div></div>'
+      : '';
+
+    const statusBadge = isDone ? LMS.badge('Completed', 'green')
+      : (isLocked ? LMS.badge('Locked', 'grey') : LMS.badge('In progress', 'blue'));
+
+    return '<div class="card material-card' + cls + ' mb-3"><div class="card-body">' +
+      '<div class="d-flex justify-content-between align-items-start gap-3">' +
+        '<div class="d-flex gap-2">' +
+          '<i class="bi ' + m.typeIcon + ' fs-4" style="color:' + (isLocked ? '#94a3b8' : 'var(--lms-blue)') + '"></i>' +
+          '<div>' +
+            '<div class="fw-semibold" style="color:var(--lms-navy)">' + m.title + '</div>' +
+            '<div class="text-muted-sm">' + m.type + ' &middot; Required time: ' + m.requiredMinutes + ' minutes</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="text-end">' + statusBadge + '<div class="mt-2">' + action + '</div></div>' +
+      '</div>' +
+      '<div class="row g-3 mt-1">' +
+        '<div class="col-md-6"><div class="text-muted-sm mb-1">Conditions</div><ul class="condition-list">' + conditions + '</ul></div>' +
+        '<div class="col-md-6">' + restrictions + timeBar + '</div>' +
+      '</div>' +
+    '</div></div>';
+  }).join(''));
+
+  LMS.render('#coaList', LMSData.coaRules.map(r =>
+    '<li><i class="bi ' + (r.met ? 'bi-check-circle-fill' : 'bi-circle') + '"></i>' +
+    '<span' + (r.met ? '' : ' class="text-muted"') + '>' + r.label + '</span></li>').join(''));
+})();
+</script>
+</body>
+</html>

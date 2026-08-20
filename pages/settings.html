@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System Administration</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <ul class="nav nav-tabs mb-3" role="tablist">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabSecurity">Security</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabAudit">Audit log</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabBackup">Backup &amp; recovery</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabLifecycle">Data lifecycle</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabRoles">Role matrix</button></li>
+  </ul>
+
+  <div class="tab-content">
+
+    <div class="tab-pane fade show active" id="tabSecurity">
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="card mb-3">
+            <div class="card-header">Authentication and session security</div>
+            <div class="card-body">
+              <form data-demo-form="Security settings saved. This UI demo does not store configuration.">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label" for="hash">Password hashing algorithm</label>
+                    <select class="form-select" id="hash"><option>bcrypt</option><option>Argon2id</option></select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label" for="timeout">Session timeout</label>
+                    <div class="input-group"><input type="number" class="form-control" id="timeout" value="30"><span class="input-group-text">minutes</span></div>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label" for="minLen">Minimum password length</label>
+                    <input type="number" class="form-control" id="minLen" value="12">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label" for="lockout">Lock account after failed attempts</label>
+                    <input type="number" class="form-control" id="lockout" value="5">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label" for="otpLen">OTP length</label>
+                    <input type="number" class="form-control" id="otpLen" value="6">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label" for="otpExpiry">OTP validity</label>
+                    <div class="input-group"><input type="number" class="form-control" id="otpExpiry" value="5"><span class="input-group-text">minutes</span></div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="forceOtp" checked><label class="form-check-label" for="forceOtp">Require email OTP for every sign-in</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="https" checked><label class="form-check-label" for="https">Force HTTPS for all connections</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="csrf" checked><label class="form-check-label" for="csrf">CSRF token validation on all forms</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" id="upload" checked><label class="form-check-label" for="upload">Validate and scan uploaded files before storing</label></div>
+                  </div>
+                  <div class="col-12"><button type="submit" class="btn btn-primary"><i class="bi bi-check2 me-1"></i>Save settings</button></div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="card">
+            <div class="card-header">Security controls in place</div>
+            <ul class="condition-list p-3 mb-0">
+              <li><i class="bi bi-check-circle-fill"></i><span>Role-Based Access Control (RBAC)</span></li>
+              <li><i class="bi bi-check-circle-fill"></i><span>Email OTP authentication</span></li>
+              <li><i class="bi bi-check-circle-fill"></i><span>Password hashing (bcrypt or Argon2)</span></li>
+              <li><i class="bi bi-check-circle-fill"></i><span>HTTPS encryption</span></li>
+              <li><i class="bi bi-check-circle-fill"></i><span>SQL injection prevention</span></li>
+              <li><i class="bi bi-check-circle-fill"></i><span>CSRF and XSS protection</span></li>
+              <li><i class="bi bi-check-circle-fill"></i><span>Session timeout</span></li>
+              <li><i class="bi bi-check-circle-fill"></i><span>Audit logging</span></li>
+              <li><i class="bi bi-check-circle-fill"></i><span>Regular database backup and recovery</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="tabAudit">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>Audit log</span>
+          <button class="btn btn-soft btn-sm" data-demo-action="Audit log export started (CSV)."><i class="bi bi-download me-1"></i>Export</button>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>Timestamp</th><th>User</th><th>Role</th><th>Action</th><th>IP address</th></tr></thead>
+            <tbody id="auditRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="tabBackup">
+      <div class="row g-3">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span>Backup history</span>
+              <button class="btn btn-primary btn-sm" data-demo-action="Manual backup started. Display only in this UI demo."><i class="bi bi-hdd me-1"></i>Run backup now</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Date</th><th>Type</th><th>Size</th><th>Destination</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+                <tbody id="backupRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-header">Backup schedule</div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label" for="freq">Frequency</label>
+                <select class="form-select" id="freq"><option>Daily at 02:00</option><option>Twice daily</option><option>Weekly</option></select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="retain">Retain backups for</label>
+                <div class="input-group"><input type="number" class="form-control" id="retain" value="30"><span class="input-group-text">days</span></div>
+              </div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="offsite" checked><label class="form-check-label" for="offsite">Copy to external drive</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="verify" checked><label class="form-check-label" for="verify">Verify restore monthly</label></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="tabLifecycle">
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="card mb-3">
+            <div class="card-header">Data lifecycle policy</div>
+            <div class="card-body">
+              <div class="mb-3 pb-3 border-bottom">
+                <div class="fw-semibold mb-1" style="color:var(--lms-navy)">Learning content</div>
+                <p class="text-muted-sm mb-0">
+                  SCORM packages, lesson materials, training videos, exercises, and quizzes are stored permanently on the web hosting and cloud server for continuous online delivery.
+                </p>
+              </div>
+              <div>
+                <div class="fw-semibold mb-1" style="color:var(--lms-navy)">Student records</div>
+                <p class="text-muted-sm mb-0">
+                  Personal information, enrolments, attendance, progress, assessment results, engagement hours, and Certificate of Attendance records stay on the web hosting while the course is active. Thirty days after course completion they are archived to the institution's on-premises physical server and retained for ten to fifteen years.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Archive queue</div>
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Course</th><th>Ended</th><th>Archive on</th><th>Records</th><th>Destination</th><th>Status</th></tr></thead>
+                <tbody id="archiveRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="card mb-3">
+            <div class="card-header">Retention settings</div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label" for="archiveDelay">Archive student records after</label>
+                <div class="input-group"><input type="number" class="form-control" id="archiveDelay" value="30"><span class="input-group-text">days from course end</span></div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="retention">Retention period</label>
+                <div class="input-group"><input type="number" class="form-control" id="retention" value="15"><span class="input-group-text">years</span></div>
+              </div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="encrypt" checked><label class="form-check-label" for="encrypt">Encrypt records during transfer to the physical server</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" id="checksum" checked><label class="form-check-label" for="checksum">Verify checksum after archiving</label></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">Storage locations</div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between"><span>Web hosting</span><span class="text-muted-sm">Active courses</span></li>
+              <li class="list-group-item d-flex justify-content-between"><span>Cloud storage</span><span class="text-muted-sm">68.4 GB of 100 GB</span></li>
+              <li class="list-group-item d-flex justify-content-between"><span>On-premises server</span><span class="text-muted-sm">Archived records</span></li>
+              <li class="list-group-item d-flex justify-content-between"><span>External drive</span><span class="text-muted-sm">Backup copies</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="tabRoles">
+      <div class="card">
+        <div class="card-header">Role permission matrix</div>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>Capability</th><th class="text-center">System Admin</th><th class="text-center">Manager</th><th class="text-center">Administrator</th><th class="text-center">Editing Teacher</th><th class="text-center">Non-editing Teacher</th><th class="text-center">Student</th></tr></thead>
+            <tbody id="matrixRows"></tbody>
+          </table>
+        </div>
+        <div class="card-body border-top">
+          <div class="row g-3" id="creatableSummary"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'settings',
+  title: 'System Administration',
+  sub: 'Security, audit trail, backups, data retention, and role permissions',
+  perm: 'system.admin',
+  breadcrumb: [{ label: 'System', href: 'dashboard.html' }, { label: 'System Administration' }]
+});
+
+(function () {
+  LMS.render('#auditRows', LMSData.auditLog.map(a =>
+    '<tr><td class="text-muted-sm">' + a.time + '</td><td class="fw-semibold">' + a.user + '</td>' +
+    '<td>' + LMS.badge(a.role, 'blue') + '</td><td>' + a.action + '</td>' +
+    '<td class="text-muted-sm">' + a.ip + '</td></tr>').join(''));
+
+  LMS.render('#backupRows', LMSData.backups.map(b =>
+    '<tr><td class="text-muted-sm">' + b.date + '</td><td>' + b.type + '</td><td class="text-muted-sm">' + b.size + '</td>' +
+    '<td class="text-muted-sm">' + b.target + '</td><td>' + LMS.statusBadge(b.status) + '</td>' +
+    '<td class="text-end"><button class="btn btn-sm btn-outline-primary py-0 px-2" data-demo-action="Restore wizard opens here. Display only in this UI demo."><i class="bi bi-arrow-counterclockwise"></i></button></td></tr>').join(''));
+
+  LMS.render('#archiveRows', LMSData.archiveQueue.map(a =>
+    '<tr><td class="fw-semibold">' + a.course + '</td><td class="text-muted-sm">' + a.ended + '</td>' +
+    '<td class="text-muted-sm">' + a.archiveOn + '</td><td>' + a.records + '</td>' +
+    '<td class="text-muted-sm">' + a.target + '</td><td>' + LMS.statusBadge(a.status) + '</td></tr>').join(''));
+
+  const order = ['sysadmin', 'manager', 'administrator', 'editing_teacher', 'non_editing_teacher', 'student'];
+  const capabilities = [
+    { label: 'Create user accounts', perm: 'users.create' },
+    { label: 'Add courses', perm: 'courses.manage' },
+    { label: 'Add schedules', perm: 'schedule.manage' },
+    { label: 'Add or enrol students', perm: 'enroll.manage' },
+    { label: 'Upload SCORM packages', perm: 'scorm.manage' },
+    { label: 'Grade students', perm: 'grade' },
+    { label: 'Upload certificates', perm: 'certificates.manage' },
+    { label: 'Export reports', perm: 'reports.export' },
+    { label: 'View attendance and progress', perm: 'progress.view' },
+    { label: 'System administration', perm: 'system.admin' },
+    { label: 'Take courses and assessments', perm: 'student.courses' }
+  ];
+
+  LMS.render('#matrixRows', capabilities.map(c =>
+    '<tr><td class="fw-semibold">' + c.label + '</td>' +
+    order.map(r => {
+      const has = LMSAuth.roles[r].permissions.indexOf(c.perm) !== -1;
+      return '<td class="text-center">' + (has
+        ? '<i class="bi bi-check-circle-fill" style="color:#1a7f45"></i>'
+        : '<i class="bi bi-dash" style="color:#b6c1d0"></i>') + '</td>';
+    }).join('') + '</tr>').join(''));
+
+  LMS.render('#creatableSummary', order.map(r => {
+    const c = LMSAuth.roles[r].creatable;
+    return '<div class="col-md-4"><div class="fw-semibold small" style="color:var(--lms-navy)">' + LMSAuth.roleLabel(r) + ' can create</div>' +
+      '<div class="text-muted-sm">' + (c.length ? c.map(LMSAuth.roleLabel).join(', ') : 'No account creation rights') + '</div></div>';
+  }).join(''));
+})();
+</script>
+</body>
+</html>

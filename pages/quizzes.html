@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quizzes &amp; Exams</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+</head>
+<body>
+<main class="app-main">
+
+  <div id="pageActionSource" hidden>
+    <a href="quiz-grade.html" class="btn btn-soft btn-sm" data-perm="grade"><i class="bi bi-clipboard-check me-1"></i>Grade submissions</a>
+    <a href="quiz-builder.html" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Create quiz</a>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Published quizzes</div><div class="stat-value">3</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Total submissions</div><div class="stat-value">158</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Automatically graded</div><div class="stat-value">114</div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="stat-label">Awaiting manual grading</div><div class="stat-value">44</div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Quizzes and examinations</div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr><th>Quiz</th><th>Course</th><th>Items</th><th>Points</th><th>Passing</th><th>Attempts</th><th>Duration</th><th>Grading</th><th>Status</th><th class="text-end">Actions</th></tr>
+        </thead>
+        <tbody id="quizRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-header">Automated grading rules</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="fw-semibold small mb-1" style="color:var(--lms-navy)">Graded automatically</div>
+          <ul class="condition-list">
+            <li><i class="bi bi-check-circle-fill"></i><span>Multiple choice</span></li>
+            <li><i class="bi bi-check-circle-fill"></i><span>True or false</span></li>
+            <li><i class="bi bi-check-circle-fill"></i><span>Matching type</span></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <div class="fw-semibold small mb-1" style="color:var(--lms-navy)">Graded manually</div>
+          <ul class="condition-list">
+            <li><i class="bi bi-circle"></i><span>Short answer</span></li>
+            <li><i class="bi bi-circle"></i><span>Essay</span></li>
+            <li><i class="bi bi-circle"></i><span>File response</span></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <div class="fw-semibold small mb-1" style="color:var(--lms-navy)">Release rules</div>
+          <ul class="condition-list">
+            <li><i class="bi bi-check-circle-fill"></i><span>Quiz unlocks after all materials are completed</span></li>
+            <li><i class="bi bi-check-circle-fill"></i><span>Result emailed once grading is final</span></li>
+            <li><i class="bi bi-check-circle-fill"></i><span>Passing score counts towards the certificate</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script>
+LMS.initPage({
+  id: 'quizzes',
+  title: 'Quizzes & Examinations',
+  sub: 'Assessment items, attempts, and automated grading settings',
+  perm: 'quiz.manage',
+  breadcrumb: [{ label: 'Learning', href: 'dashboard.html' }, { label: 'Quizzes & Exams' }]
+});
+
+(function () {
+  LMS.render('#quizRows', LMSData.quizzes.map(q =>
+    '<tr>' +
+      '<td><div class="fw-semibold">' + q.title + '</div><div class="text-muted-sm">' + q.submissions + ' submissions</div></td>' +
+      '<td class="text-muted-sm">' + q.course + '</td>' +
+      '<td>' + q.items + '</td>' +
+      '<td>' + q.points + '</td>' +
+      '<td>' + q.passing + '%</td>' +
+      '<td>' + q.attempts + '</td>' +
+      '<td class="text-muted-sm">' + q.duration + ' min</td>' +
+      '<td>' + LMS.badge(q.grading, q.grading === 'Automated' ? 'green' : 'amber') + '</td>' +
+      '<td>' + LMS.statusBadge(q.status) + '</td>' +
+      '<td class="text-end">' +
+        '<a href="quiz-builder.html" class="btn btn-sm btn-outline-primary py-0 px-2"><i class="bi bi-pencil"></i></a> ' +
+        '<a href="quiz-grade.html" class="btn btn-sm btn-outline-primary py-0 px-2"><i class="bi bi-clipboard-check"></i></a>' +
+      '</td>' +
+    '</tr>').join(''));
+})();
+</script>
+</body>
+</html>
